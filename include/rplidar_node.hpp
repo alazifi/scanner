@@ -65,7 +65,7 @@ using Timer = rclcpp::TimerBase::SharedPtr;
 using namespace std::chrono_literals;
 }
 
-namespace rplidar_ros
+namespace scanner
 {
 
 constexpr double deg_2_rad(double x)
