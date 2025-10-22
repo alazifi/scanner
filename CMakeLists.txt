@@ -57,14 +57,14 @@ include_directories(
 )
 
 add_executable(rplidar_node	src/rplidar_node.cpp ${RPLIDAR_SDK_SRC})
-# target_link_libraries(rplidar_node ${ament_cmake_LIBRARIES})
-ament_target_dependencies(rplidar_node
+# target_link_libraries(scanner_node ${ament_cmake_LIBRARIES})
+ament_target_dependencies(scanner_node
   rclcpp
   std_srvs
   sensor_msgs
 )
 
-add_executable(rplidar_composition src/rplidar_node.cpp ${RPLIDAR_SDK_SRC})
+add_executable(rplidar_composition src/scanner_node.cpp ${RPLIDAR_SDK_SRC})
 ament_target_dependencies(rplidar_composition
   rclcpp
   std_srvs
@@ -85,7 +85,7 @@ install(DIRECTORY launch rviz
 )
 
 install(
-  TARGETS rplidar_node rplidar_composition rplidar_client
+  TARGETS scanner_node rplidar_composition rplidar_client
   RUNTIME DESTINATION lib/${PROJECT_NAME}
 )
 

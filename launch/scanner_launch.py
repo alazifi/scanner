@@ -58,8 +58,8 @@ def generate_launch_description():
 
         Node(
             package='scanner',
-            executable='rplidar_node',
-            name='rplidar_node',
+            executable='scanner_node',
+            name='scanner_node',
             parameters=[{'channel_type': channel_type,
                          'udp_ip': udp_ip,
                          'udp_port': udp_port,

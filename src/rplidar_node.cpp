@@ -62,7 +62,7 @@ class RPlidarNode : public rclcpp::Node
 {
   public:
     RPlidarNode(const rclcpp::NodeOptions& options = rclcpp::NodeOptions())
-    : Node("rplidar_node", options)
+    : Node("scanner_node", options)
     {
 
       
@@ -169,7 +169,7 @@ class RPlidarNode : public rclcpp::Node
         if (auto_standby) {
             RCLCPP_INFO(
                 this->get_logger(),
-                "Ingnoring stop_motor request because rplidar_node is in 'auto standby' mode");
+                "Ingnoring stop_motor request because scanner_node is in 'auto standby' mode");
             return false;
         }
 
@@ -190,7 +190,7 @@ class RPlidarNode : public rclcpp::Node
         if (auto_standby) {
             RCLCPP_INFO(
                 this->get_logger(),
-                "Ingnoring start_motor request because rplidar_node is in 'auto standby' mode");
+                "Ingnoring start_motor request because scanner_node is in 'auto standby' mode");
             return false;
         }
         RCLCPP_DEBUG(this->get_logger(), "Call to '%s'", __FUNCTION__);
@@ -589,9 +589,9 @@ void ExitHandler(int sig)
 int main(int argc, char * argv[])
 {
   rclcpp::init(argc, argv);  
-  auto rplidar_node = std::make_shared<RPlidarNode>(rclcpp::NodeOptions());
+  auto scanner_node = std::make_shared<RPlidarNode>(rclcpp::NodeOptions());
   signal(SIGINT,ExitHandler);
-  int ret = rplidar_node->work_loop();
+  int ret = scanner_node->work_loop();
   rclcpp::shutdown();
   return ret;
 }
