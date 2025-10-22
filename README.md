@@ -4,7 +4,7 @@ TRUSMI LIDAR ROS2
 
 ## How to install ROS2
 
-[humble](https://docs.ros.org/en/humble/Installation.
+[humble](https://docs.ros.org/en/humble/Installation.html)
 
 ## How to configuring your ROS 2 environment
 
@@ -28,7 +28,7 @@ TRUSMI LIDAR ROS2
    Ensure you're still in the ros2_ws/src directory before you clone:
 
    ```bash
-   git clone -b ros2 https://github.com/alazifi/scanner.git
+   git clone -b ros2 https://github.com/alazifi/scannery.git
    ```
 
 2. Build rpidar_ros package
