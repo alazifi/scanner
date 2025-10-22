@@ -1,9 +1,9 @@
 /*
- *  RPLIDAR SDK
+ *  SCANNER SDK
  *
  *  Copyright (c) 2009 - 2014 RoboPeak Team
  *  http://www.robopeak.com
- *  Copyright (c) 2014 - 2020 Shanghai Slamtec Co., Ltd.
+ *  Copyright (c) 2014 - 2019 Shanghai Slamtec Co., Ltd.
  *  http://www.slamtec.com
  *
  */
@@ -33,29 +33,12 @@
  */
 
 #pragma once
-#include "sl_lidar_protocol.h"
-// RP-Lidar Input Packets
 
-#define RPLIDAR_CMD_SYNC_BYTE        SL_LIDAR_CMD_SYNC_BYTE
-#define RPLIDAR_CMDFLAG_HAS_PAYLOAD  SL_LIDAR_CMDFLAG_HAS_PAYLOAD
+#include <vector>
+#include "hal/types.h"
+#include "scanner_protocol.h"
+#include "scanner_cmd.h"
+#include "scanner_driver.h"
 
-
-#define RPLIDAR_ANS_SYNC_BYTE1       SL_LIDAR_ANS_SYNC_BYTE1
-#define RPLIDAR_ANS_SYNC_BYTE2       SL_LIDAR_ANS_SYNC_BYTE2
-
-#define RPLIDAR_ANS_PKTFLAG_LOOP     SL_LIDAR_ANS_PKTFLAG_LOOP
-
-#define RPLIDAR_ANS_HEADER_SIZE_MASK        SL_LIDAR_ANS_HEADER_SIZE_MASK
-#define RPLIDAR_ANS_HEADER_SUBTYPE_SHIFT    SL_LIDAR_ANS_HEADER_SUBTYPE_SHIFT
-
-#if defined(_WIN32)
-#pragma pack(1)
-#endif
-
-typedef sl_lidar_cmd_packet_t rplidar_cmd_packet_t;
-typedef sl_lidar_ans_header_t rplidar_ans_header_t;
-
-
-#if defined(_WIN32)
-#pragma pack()
-#endif
+#define SCANNER_SDK_VERSION "2.0.0"
+#define SLAMTEC_LIDAR_SDK_VERSION  SL_LIDAR_SDK_VERSION

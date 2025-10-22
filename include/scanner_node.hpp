@@ -1,5 +1,5 @@
 /*
- *  RPLIDAR ROS NODE
+ *  SCANNER ROS NODE
  *
  *  Copyright (c) 2019 Hunter L. Allen
  */
@@ -27,8 +27,8 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
-#ifndef RPLIDAR_NODE_HPP_
-#define RPLIDAR_NODE_HPP_
+#ifndef SCANNER_NODE_HPP_
+#define SCANNER_NODE_HPP_
 
 #include <rclcpp/clock.hpp>
 #include <rclcpp/rclcpp.hpp>
@@ -38,7 +38,7 @@
 #include <sensor_msgs/msg/laser_scan.hpp>
 #include <std_srvs/srv/empty.hpp>
 
-#include <rplidar.h>
+#include <scanner.h>
 #include <visibility.h>
 
 #include <chrono>
@@ -58,7 +58,7 @@ using StopMotorService = rclcpp::Service<std_srvs::srv::Empty>::SharedPtr;
 using RPlidarDriver = rp::standalone::rplidar::RPlidarDriver;
 using RplidarScanMode = rp::standalone::rplidar::RplidarScanMode;
 using Clock = rclcpp::Clock::SharedPtr;
-using ResponseNodeArray = std::unique_ptr<rplidar_response_measurement_node_hq_t[]>;
+using ResponseNodeArray = std::unique_ptr<scanner_response_measurement_node_hq_t[]>;
 using EmptyRequest = std::shared_ptr<std_srvs::srv::Empty::Request>;
 using EmptyResponse = std::shared_ptr<std_srvs::srv::Empty::Response>;
 using Timer = rclcpp::TimerBase::SharedPtr;
@@ -73,12 +73,12 @@ constexpr double deg_2_rad(double x)
   return x * M_PI / 180.0;
 }
 
-static float getAngle(const rplidar_response_measurement_node_hq_t & node)
+static float getAngle(const scanner_response_measurement_node_hq_t & node)
 {
   return node.angle_z_q14 * 90.f / 16384.f;
 }
 
-class RPLIDAR_ROS_PUBLIC scanner_node : public rclcpp::Node
+class SCANNER_ROS_PUBLIC scanner_node : public rclcpp::Node
 {
 public:
   explicit scanner_node(const rclcpp::NodeOptions & options = rclcpp::NodeOptions());
@@ -91,8 +91,8 @@ public:
   void start_motor(const EmptyRequest req, EmptyResponse res);
 
 private:
-  bool getRPLIDARDeviceInfo() const;
-  bool checkRPLIDARHealth() const;
+  bool getSCANNERDeviceInfo() const;
+  bool checkSCANNERHealth() const;
   bool set_scan_mode();
   void publish_loop();
   void start();
@@ -131,6 +131,6 @@ private:
   bool m_running = false;
 };
 
-}  // namespace rplidar_ros
+}
 
-#endif  // RPLIDAR_NODE_HPP_
+#endif

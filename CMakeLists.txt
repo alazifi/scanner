@@ -18,24 +18,24 @@ if(MSVC)
   )
 endif()
 
-set(RPLIDAR_SDK_PATH "${PROJECT_SOURCE_DIR}/sdk/")
+set(SCANNER_SDK_PATH "${PROJECT_SOURCE_DIR}/sdk/")
 
 if(APPLE)
 add_compile_definitions(_MACOS)
-FILE(GLOB RPLIDAR_SDK_SRC
-  "${RPLIDAR_SDK_PATH}/src/arch/macOS/*.cpp"
-  "${RPLIDAR_SDK_PATH}/src/dataunpacker/*.cpp"
-  "${RPLIDAR_SDK_PATH}/src/dataunpacker/unpacker/*.cpp"
-  "${RPLIDAR_SDK_PATH}/src/hal/*.cpp"
-  "${RPLIDAR_SDK_PATH}/src/*.cpp"
+FILE(GLOB SCANNER_SDK_SRC
+  "${SCANNER_SDK_PATH}/src/arch/macOS/*.cpp"
+  "${SCANNER_SDK_PATH}/src/dataunpacker/*.cpp"
+  "${SCANNER_SDK_PATH}/src/dataunpacker/unpacker/*.cpp"
+  "${SCANNER_SDK_PATH}/src/hal/*.cpp"
+  "${SCANNER_SDK_PATH}/src/*.cpp"
 )
 else()
-FILE(GLOB RPLIDAR_SDK_SRC 
-  "${RPLIDAR_SDK_PATH}/src/arch/linux/*.cpp"
-  "${RPLIDAR_SDK_PATH}/src/dataunpacker/*.cpp"
-  "${RPLIDAR_SDK_PATH}/src/dataunpacker/unpacker/*.cpp"
-  "${RPLIDAR_SDK_PATH}/src/hal/*.cpp"
-  "${RPLIDAR_SDK_PATH}/src/*.cpp"
+FILE(GLOB SCANNER_SDK_SRC 
+  "${SCANNER_SDK_PATH}/src/arch/linux/*.cpp"
+  "${SCANNER_SDK_PATH}/src/dataunpacker/*.cpp"
+  "${SCANNER_SDK_PATH}/src/dataunpacker/unpacker/*.cpp"
+  "${SCANNER_SDK_PATH}/src/hal/*.cpp"
+  "${SCANNER_SDK_PATH}/src/*.cpp"
 )
 endif()
 
@@ -51,12 +51,12 @@ find_package(std_srvs REQUIRED)
 # Build
 ################################################################################
 include_directories(
-  ${RPLIDAR_SDK_PATH}/include
-  ${RPLIDAR_SDK_PATH}/src
+  ${SCANNER_SDK_PATH}/include
+  ${SCANNER_SDK_PATH}/src
   ${Boost_INCLUDE_DIRS}
 )
 
-add_executable(scanner_node	src/scanner_node.cpp ${RPLIDAR_SDK_SRC})
+add_executable(scanner_node	src/scanner_node.cpp ${SCANNER_SDK_SRC})
 # target_link_libraries(scanner_node ${ament_cmake_LIBRARIES})
 ament_target_dependencies(scanner_node
   rclcpp
@@ -64,7 +64,7 @@ ament_target_dependencies(scanner_node
   sensor_msgs
 )
 
-add_executable(scanner_composition src/scanner_node.cpp ${RPLIDAR_SDK_SRC})
+add_executable(scanner_composition src/scanner_node.cpp ${SCANNER_SDK_SRC})
 ament_target_dependencies(scanner_composition
   rclcpp
   std_srvs

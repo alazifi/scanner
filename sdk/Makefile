@@ -1,5 +1,5 @@
 #/*
-# *  RPLIDAR SDK
+# *  SCANNER SDK
 # *
 # *  Copyright (c) 2009 - 2014 RoboPeak Team
 # *  http://www.robopeak.com

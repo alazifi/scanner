@@ -53,7 +53,7 @@ static _u64 _getSampleDelayOffsetInLegacyMode(const SlamtecLidarTimingDesc& timi
     // guess channel baudrate by LIDAR model ....
     const _u64 channelBaudRate = timing.native_baudrate? timing.native_baudrate:115200;
 
-    _u64 tranmissionDelay = 1000000ULL * sizeof(rplidar_response_measurement_node_t) * 10 / channelBaudRate;
+    _u64 tranmissionDelay = 1000000ULL * sizeof(scanner_response_measurement_node_t) * 10 / channelBaudRate;
 
     if (timing.native_interface_type == LIDARInterfaceType::LIDAR_INTERFACE_ETHERNET)
     {
@@ -70,7 +70,7 @@ static _u64 _getSampleDelayOffsetInLegacyMode(const SlamtecLidarTimingDesc& timi
 UnpackerHandler_NormalNode::UnpackerHandler_NormalNode()
     : _cached_scan_node_buf_pos(0)
 {
-    _cached_scan_node_buf.resize(sizeof(rplidar_response_measurement_node_t));
+    _cached_scan_node_buf.resize(sizeof(scanner_response_measurement_node_t));
     memset(&_cachedTimingDesc, 0, sizeof(_cachedTimingDesc));
 ;}
 
@@ -81,7 +81,7 @@ UnpackerHandler_NormalNode::~UnpackerHandler_NormalNode()
 
 _u8 UnpackerHandler_NormalNode::getSampleAnswerType() const
 {
-	return RPLIDAR_ANS_TYPE_MEASUREMENT;
+	return SCANNER_ANS_TYPE_MEASUREMENT;
 }
 
 void UnpackerHandler_NormalNode::onData(LIDARSampleDataUnpackerInner* engine, const _u8* data, size_t cnt)
@@ -103,7 +103,7 @@ void UnpackerHandler_NormalNode::onData(LIDARSampleDataUnpackerInner* engine, co
         break;
         case 1: // expect the highest bit to be 1
         {
-            if (current_data & RPLIDAR_RESP_MEASUREMENT_CHECKBIT) {
+            if (current_data & SCANNER_RESP_MEASUREMENT_CHECKBIT) {
                 // pass
             }
             else {
@@ -112,22 +112,22 @@ void UnpackerHandler_NormalNode::onData(LIDARSampleDataUnpackerInner* engine, co
             }
         }
         break;
-        case sizeof(rplidar_response_measurement_node_t) - 1: // new data ready
+        case sizeof(scanner_response_measurement_node_t) - 1: // new data ready
         {
-            _cached_scan_node_buf[sizeof(rplidar_response_measurement_node_t) - 1] = current_data;
+            _cached_scan_node_buf[sizeof(scanner_response_measurement_node_t) - 1] = current_data;
             _cached_scan_node_buf_pos = 0;
 
-            rplidar_response_measurement_node_t* node = reinterpret_cast<rplidar_response_measurement_node_t*>(&_cached_scan_node_buf[0]);
+            scanner_response_measurement_node_t* node = reinterpret_cast<scanner_response_measurement_node_t*>(&_cached_scan_node_buf[0]);
 #ifdef _CPU_ENDIAN_BIG
             node->angle_q6_checkbit = le16_to_cpu(node->angle_q6_checkbit);
             node->distance_q2 = le16_to_cpu(node->distance_q2);
 #endif
-            //cast node to rplidar_response_measurement_node_hq_t
-            rplidar_response_measurement_node_hq_t hqNode;
-            hqNode.angle_z_q14 = (((node->angle_q6_checkbit) >> RPLIDAR_RESP_MEASUREMENT_ANGLE_SHIFT) << 8) / 90;  //transfer to q14 Z-angle
+            //cast node to scanner_response_measurement_node_hq_t
+            scanner_response_measurement_node_hq_t hqNode;
+            hqNode.angle_z_q14 = (((node->angle_q6_checkbit) >> SCANNER_RESP_MEASUREMENT_ANGLE_SHIFT) << 8) / 90;  //transfer to q14 Z-angle
             hqNode.dist_mm_q2 = node->distance_q2;
-            hqNode.flag = (node->sync_quality & RPLIDAR_RESP_MEASUREMENT_SYNCBIT);  // trasfer syncbit to HQ flag field
-            hqNode.quality = (node->sync_quality >> RPLIDAR_RESP_MEASUREMENT_QUALITY_SHIFT) << RPLIDAR_RESP_MEASUREMENT_QUALITY_SHIFT;  //remove the last two bits and then make quality from 0-63 to 0-255
+            hqNode.flag = (node->sync_quality & SCANNER_RESP_MEASUREMENT_SYNCBIT);  // trasfer syncbit to HQ flag field
+            hqNode.quality = (node->sync_quality >> SCANNER_RESP_MEASUREMENT_QUALITY_SHIFT) << SCANNER_RESP_MEASUREMENT_QUALITY_SHIFT;  //remove the last two bits and then make quality from 0-63 to 0-255
             
             
             engine->publishHQNode(engine->getCurrentTimestamp_uS() - _getSampleDelayOffsetInLegacyMode(_cachedTimingDesc), &hqNode);

@@ -1,5 +1,5 @@
 /*
- *  RPLIDAR SDK
+ *  SCANNER SDK
  *
  *  Copyright (c) 2009 - 2014 RoboPeak Team
  *  http://www.robopeak.com
@@ -65,7 +65,7 @@ public:
     };
 
 public:
-    /// Create an RPLIDAR Driver Instance
+    /// Create an SCANNER Driver Instance
     /// This interface should be invoked first before any other operations
     ///
     /// \param drivertype the connection type used by the driver. 
@@ -74,31 +74,31 @@ public:
 
     RPlidarDriver(sl_u32 channelType);
 
-    /// Dispose the RPLIDAR Driver Instance specified by the drv parameter
+    /// Dispose the SCANNER Driver Instance specified by the drv parameter
     /// Applications should invoke this interface when the driver instance is no longer used in order to free memory
     static void DisposeDriver(RPlidarDriver * drv);
 
-    /// Open the specified serial port and connect to a target RPLIDAR device
+    /// Open the specified serial port and connect to a target SCANNER device
     ///
     /// \param port_path     the device path of the serial port 
     ///        e.g. on Windows, it may be com3 or \\.\com10 
     ///             on Unix-Like OS, it may be /dev/ttyS1, /dev/ttyUSB2, etc
     ///
     /// \param baudrate      the baudrate used
-    ///        For most RPLIDAR models, the baudrate should be set to 115200
+    ///        For most SCANNER models, the baudrate should be set to 115200
     ///
     /// \param flag          other flags
     ///        Reserved for future use, always set to Zero
     u_result connect(const char *path, _u32 portOrBaud, _u32 flag = 0);
     
-    /// Disconnect with the RPLIDAR and close the serial port
+    /// Disconnect with the SCANNER and close the serial port
     void disconnect();
 
     /// Returns TRUE when the connection has been established
     bool isConnected(); 
 
-    /// Ask the RPLIDAR core system to reset it self
-    /// The host system can use the Reset operation to help RPLIDAR escape the self-protection mode.
+    /// Ask the SCANNER core system to reset it self
+    /// The host system can use the Reset operation to help SCANNER escape the self-protection mode.
     ///
     ///  \param timeout       The operation timeout value (in millisecond) for the serial port communication                     
     u_result reset(_u32 timeout = DEFAULT_TIMEOUT);
@@ -129,29 +129,29 @@ public:
     /// \param outUsedScanMode  The scan mode selected by lidar
     u_result startScanExpress(bool force, _u16 scanMode, _u32 options = 0, RplidarScanMode* outUsedScanMode = NULL, _u32 timeout = DEFAULT_TIMEOUT);
 
-    /// Retrieve the health status of the RPLIDAR
-    /// The host system can use this operation to check whether RPLIDAR is in the self-protection mode.
+    /// Retrieve the health status of the SCANNER
+    /// The host system can use this operation to check whether SCANNER is in the self-protection mode.
     ///
-    /// \param health        The health status info returned from the RPLIDAR
+    /// \param health        The health status info returned from the SCANNER
     ///
     /// \param timeout       The operation timeout value (in millisecond) for the serial port communication     
-    u_result getHealth(rplidar_response_device_health_t & health, _u32 timeout = DEFAULT_TIMEOUT);
+    u_result getHealth(scanner_response_device_health_t & health, _u32 timeout = DEFAULT_TIMEOUT);
 
-    /// Get the device information of the RPLIDAR include the serial number, firmware version, device model etc.
+    /// Get the device information of the SCANNER include the serial number, firmware version, device model etc.
     /// 
-    /// \param info          The device information returned from the RPLIDAR
+    /// \param info          The device information returned from the SCANNER
     /// \param timeout       The operation timeout value (in millisecond) for the serial port communication  
-    u_result getDeviceInfo(rplidar_response_device_info_t & info, _u32 timeout = DEFAULT_TIMEOUT);
+    u_result getDeviceInfo(scanner_response_device_info_t & info, _u32 timeout = DEFAULT_TIMEOUT);
 
-    /// Set the RPLIDAR's motor pwm when using accessory board, currently valid for A2 only.
+    /// Set the SCANNER's motor pwm when using accessory board, currently valid for A2 only.
     /// 
     /// \param pwm           The motor pwm value would like to set 
     u_result setMotorPWM(_u16 pwm);
 
-    /// Start RPLIDAR's motor when using accessory board
+    /// Start SCANNER's motor when using accessory board
     u_result startMotor();
 
-    /// Stop RPLIDAR's motor when using accessory board
+    /// Stop SCANNER's motor when using accessory board
     u_result stopMotor();
 
     /// Check whether the device support motor control.
@@ -165,20 +165,20 @@ public:
 	///
 	/// \param conf             Network parameter that LPX series lidar owned
 	/// \param timeout          The operation timeout value (in millisecond) for the ethernet udp communication
-	u_result  setLidarIpConf(const rplidar_ip_conf_t& conf, _u32 timeout = DEFAULT_TIMEOUT);
+	u_result  setLidarIpConf(const scannerip_conf_t& conf, _u32 timeout = DEFAULT_TIMEOUT);
 
     ///Get LPX and S2E series lidar's static IP address
     ///
     /// \param conf             Network parameter that LPX series lidar owned
     /// \param timeout          The operation timeout value (in millisecond) for the ethernet udp communication
-    u_result  getLidarIpConf(rplidar_ip_conf_t& conf, _u32 timeout = DEFAULT_TIMEOUT);
+    u_result  getLidarIpConf(scannerip_conf_t& conf, _u32 timeout = DEFAULT_TIMEOUT);
 
 	///Get LPX and S2E series lidar's MAC address
 	///
 	/// \param macAddrArray         The device MAC information returned from the LPX series lidar
 	u_result getDeviceMacAddr(_u8* macAddrArray, _u32 timeoutInMs = DEFAULT_TIMEOUT);
 
-    /// Ask the RPLIDAR core system to stop the current scan operation and enter idle state. The background thread will be terminated
+    /// Ask the SCANNER core system to stop the current scan operation and enter idle state. The background thread will be terminated
     ///
     /// \param timeout       The operation timeout value (in millisecond) for the serial port communication 
     u_result stop(_u32 timeout = DEFAULT_TIMEOUT);
@@ -192,7 +192,7 @@ public:
     ///
     /// \param nodebuffer     Buffer provided by the caller application to store the scan data
     ///
-    /// \param count          The caller must initialize this parameter to set the max data count of the provided buffer (in unit of rplidar_response_measurement_node_t).
+    /// \param count          The caller must initialize this parameter to set the max data count of the provided buffer (in unit of scanner_response_measurement_node_t).
     ///                       Once the interface returns, this parameter will store the actual received data count.
     ///
     /// \param timeout        Max duration allowed to wait for a complete scan data, nothing will be stored to the nodebuffer if a complete 360-degrees' scan data cannot to be ready timely.
@@ -200,16 +200,16 @@ public:
     /// The interface will return RESULT_OPERATION_TIMEOUT to indicate that no complete 360-degrees' scan can be retrieved withing the given timeout duration. 
     ///
     /// \The caller application can set the timeout value to Zero(0) to make this interface always returns immediately to achieve non-block operation.
-    u_result grabScanDataHq(rplidar_response_measurement_node_hq_t * nodebuffer, size_t & count, _u32 timeout = DEFAULT_TIMEOUT);
+    u_result grabScanDataHq(scanner_response_measurement_node_hq_t * nodebuffer, size_t & count, _u32 timeout = DEFAULT_TIMEOUT);
 
     /// Ascending the scan data according to the angle value in the scan.
     ///
     /// \param nodebuffer     Buffer provided by the caller application to do the reorder. Should be retrived from the grabScanData
     ///
-    /// \param count          The caller must initialize this parameter to set the max data count of the provided buffer (in unit of rplidar_response_measurement_node_t).
+    /// \param count          The caller must initialize this parameter to set the max data count of the provided buffer (in unit of scanner_response_measurement_node_t).
     ///                       Once the interface returns, this parameter will store the actual received data count.
     /// The interface will return RESULT_OPERATION_FAIL when all the scan data is invalid. 
-    u_result ascendScanData(rplidar_response_measurement_node_hq_t * nodebuffer, size_t count);
+    u_result ascendScanData(scanner_response_measurement_node_hq_t * nodebuffer, size_t count);
 
     /// Return received scan points even if it's not complete scan
     ///
@@ -218,7 +218,7 @@ public:
     /// \param count          Once the interface returns, this parameter will store the actual received data count.
     ///
     /// The interface will return RESULT_OPERATION_TIMEOUT to indicate that not even a single node can be retrieved since last call. 
-    u_result getScanDataWithInterval(rplidar_response_measurement_node_t * nodebuffer, size_t & count);
+    u_result getScanDataWithInterval(scanner_response_measurement_node_t * nodebuffer, size_t & count);
 
     /// Return received scan points even if it's not complete scan
     ///
@@ -227,7 +227,7 @@ public:
     /// \param count          Once the interface returns, this parameter will store the actual received data count.
     ///
     /// The interface will return RESULT_OPERATION_TIMEOUT to indicate that not even a single node can be retrieved since last call. 
-    u_result getScanDataWithIntervalHq(rplidar_response_measurement_node_hq_t * nodebuffer, size_t & count);
+    u_result getScanDataWithIntervalHq(scanner_response_measurement_node_hq_t * nodebuffer, size_t & count);
 
 
     virtual ~RPlidarDriver();

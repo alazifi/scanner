@@ -53,13 +53,13 @@ public:
 	virtual void onUnpackerContextSet(LIDARSampleDataUnpacker::UnpackerContextType type, const void* data, size_t size);
 protected:
 
-	void _onScanNodeCapsuleData(rplidar_response_capsule_measurement_nodes_t &, LIDARSampleDataUnpackerInner* engine);
+	void _onScanNodeCapsuleData(scanner_response_capsule_measurement_nodes_t &, LIDARSampleDataUnpackerInner* engine);
 
 	std::vector<_u8> _cached_scan_node_buf;
 	int              _cached_scan_node_buf_pos;
 	bool             _is_previous_capsuledataRdy;
 
-	rplidar_response_capsule_measurement_nodes_t _cached_previous_capsuledata;
+	scanner_response_capsule_measurement_nodes_t _cached_previous_capsuledata;
 	_u64             _cached_last_data_timestamp_us;
 
 	SlamtecLidarTimingDesc _cachedTimingDesc;
@@ -75,14 +75,14 @@ public:
 	virtual void reset();
 	virtual void onUnpackerContextSet(LIDARSampleDataUnpacker::UnpackerContextType type, const void* data, size_t size);
 protected:
-	void _onScanNodeUltraCapsuleData(rplidar_response_ultra_capsule_measurement_nodes_t&, LIDARSampleDataUnpackerInner* engine);
+	void _onScanNodeUltraCapsuleData(scanner_response_ultra_capsule_measurement_nodes_t&, LIDARSampleDataUnpackerInner* engine);
 
 
 	std::vector<_u8> _cached_scan_node_buf;
 	int              _cached_scan_node_buf_pos;
 	bool             _is_previous_capsuledataRdy;
 
-	rplidar_response_ultra_capsule_measurement_nodes_t _cached_previous_ultracapsuledata;
+	scanner_response_ultra_capsule_measurement_nodes_t _cached_previous_ultracapsuledata;
 	_u64             _cached_last_data_timestamp_us;
 
 	SlamtecLidarTimingDesc _cachedTimingDesc;
@@ -101,14 +101,14 @@ public:
 	virtual void reset();
 	virtual void onUnpackerContextSet(LIDARSampleDataUnpacker::UnpackerContextType type, const void* data, size_t size);
 protected:
-	void _onScanNodeDenseCapsuleData(rplidar_response_dense_capsule_measurement_nodes_t&, LIDARSampleDataUnpackerInner* engine);
+	void _onScanNodeDenseCapsuleData(scanner_response_dense_capsule_measurement_nodes_t&, LIDARSampleDataUnpackerInner* engine);
 
 
 	std::vector<_u8> _cached_scan_node_buf;
 	int              _cached_scan_node_buf_pos;
 	bool             _is_previous_capsuledataRdy;
 
-	rplidar_response_dense_capsule_measurement_nodes_t _cached_previous_dense_capsuledata;
+	scanner_response_dense_capsule_measurement_nodes_t _cached_previous_dense_capsuledata;
 	_u64             _cached_last_data_timestamp_us;
 
 	SlamtecLidarTimingDesc _cachedTimingDesc;
@@ -126,13 +126,13 @@ public:
 	virtual void reset();
 	virtual void onUnpackerContextSet(LIDARSampleDataUnpacker::UnpackerContextType type, const void* data, size_t size);
 protected:
-	void _onScanNodeUltraDenseCapsuleData(rplidar_response_ultra_dense_capsule_measurement_nodes_t&, LIDARSampleDataUnpackerInner* engine);
+	void _onScanNodeUltraDenseCapsuleData(scanner_response_ultra_dense_capsule_measurement_nodes_t&, LIDARSampleDataUnpackerInner* engine);
 
 	std::vector<_u8> _cached_scan_node_buf;
 	int              _cached_scan_node_buf_pos;
 	bool             _is_previous_capsuledataRdy;
 
-	rplidar_response_ultra_dense_capsule_measurement_nodes_t _cached_previous_ultra_dense_capsuledata;
+	scanner_response_ultra_dense_capsule_measurement_nodes_t _cached_previous_ultra_dense_capsuledata;
 	_u64             _cached_last_data_timestamp_us;
 
 

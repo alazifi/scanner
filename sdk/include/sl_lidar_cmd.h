@@ -69,7 +69,7 @@
 #define SL_LIDAR_CMD_HQ_SCAN                0x83 //added in fw 1.24
 #define SL_LIDAR_CMD_GET_LIDAR_CONF         0x84 //added in fw 1.24
 #define SL_LIDAR_CMD_SET_LIDAR_CONF         0x85 //added in fw 1.24
-//add for A2 to set RPLIDAR motor pwm when using accessory board
+//add for A2 to set SCANNER motor pwm when using accessory board
 #define SL_LIDAR_CMD_SET_MOTOR_PWM          0xF0
 #define SL_LIDAR_CMD_GET_ACC_BOARD_FLAG     0xFF
 

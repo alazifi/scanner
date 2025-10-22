@@ -58,7 +58,7 @@ static _u64 _getSampleDelayOffsetInHQMode(const SlamtecLidarTimingDesc& timing)
     // guess channel baudrate by LIDAR model ....
     const _u64 channelBaudRate = timing.native_baudrate? timing.native_baudrate:1000000;
 
-    _u64 tranmissionDelay = 1000000ULL * sizeof(rplidar_response_measurement_node_hq_t) * 10 / channelBaudRate;
+    _u64 tranmissionDelay = 1000000ULL * sizeof(scanner_response_measurement_node_hq_t) * 10 / channelBaudRate;
 
     if (timing.native_interface_type == LIDARInterfaceType::LIDAR_INTERFACE_ETHERNET)
     {
@@ -75,7 +75,7 @@ static _u64 _getSampleDelayOffsetInHQMode(const SlamtecLidarTimingDesc& timing)
 UnpackerHandler_HQNode::UnpackerHandler_HQNode()
     : _cached_scan_node_buf_pos(0)
 {
-    _cached_scan_node_buf.resize(sizeof(rplidar_response_hq_capsule_measurement_nodes_t));
+    _cached_scan_node_buf.resize(sizeof(scanner_response_hq_capsule_measurement_nodes_t));
     memset(&_cachedTimingDesc, 0, sizeof(_cachedTimingDesc));
 }
 
@@ -86,7 +86,7 @@ UnpackerHandler_HQNode::~UnpackerHandler_HQNode()
 
 _u8 UnpackerHandler_HQNode::getSampleAnswerType() const
 {
-	return RPLIDAR_ANS_TYPE_MEASUREMENT_HQ;
+	return SCANNER_ANS_TYPE_MEASUREMENT_HQ;
 }
 
 void UnpackerHandler_HQNode::onData(LIDARSampleDataUnpackerInner* engine, const _u8* data, size_t cnt)
@@ -100,7 +100,7 @@ void UnpackerHandler_HQNode::onData(LIDARSampleDataUnpackerInner* engine, const 
         {
         case 0: // expect the sync byte
         {
-            if (current_data == RPLIDAR_RESP_MEASUREMENT_HQ_SYNC) {
+            if (current_data == SCANNER_RESP_MEASUREMENT_HQ_SYNC) {
                 // pass
             }
             else {
@@ -109,17 +109,17 @@ void UnpackerHandler_HQNode::onData(LIDARSampleDataUnpackerInner* engine, const 
         }
         break;
 
-        case sizeof(rplidar_response_hq_capsule_measurement_nodes_t) - 1 - 4:    // get bytes to calculate crc ready
+        case sizeof(scanner_response_hq_capsule_measurement_nodes_t) - 1 - 4:    // get bytes to calculate crc ready
         {
            
         }
         break;
 
-        case sizeof(rplidar_response_hq_capsule_measurement_nodes_t) - 1: // new data ready
+        case sizeof(scanner_response_hq_capsule_measurement_nodes_t) - 1: // new data ready
         {
-            _cached_scan_node_buf[sizeof(rplidar_response_hq_capsule_measurement_nodes_t) - 1] = current_data;
+            _cached_scan_node_buf[sizeof(scanner_response_hq_capsule_measurement_nodes_t) - 1] = current_data;
             _cached_scan_node_buf_pos = 0;
-            rplidar_response_hq_capsule_measurement_nodes_t* nodesData = reinterpret_cast<rplidar_response_hq_capsule_measurement_nodes_t*>(&_cached_scan_node_buf[0]);
+            scanner_response_hq_capsule_measurement_nodes_t* nodesData = reinterpret_cast<scanner_response_hq_capsule_measurement_nodes_t*>(&_cached_scan_node_buf[0]);
 
 #ifdef CONF_NO_BOOST_CRC_SUPPORT
             _u32 crcCalc = crc32::getResult(&_cached_scan_node_buf[0], sizeof(sl_lidar_response_hq_capsule_measurement_nodes_t) - 4);
@@ -129,8 +129,8 @@ void UnpackerHandler_HQNode::onData(LIDARSampleDataUnpackerInner* engine, const 
             // calculate crc with boost crc method
             boost::crc_optimal<32, 0x04C11DB7, 0xFFFFFFFF, 0xFFFFFFFF, true, true> mycrc;
             std::vector<_u8> crcInputData;
-            crcInputData.resize(sizeof(rplidar_response_hq_capsule_measurement_nodes_t) - 4);
-            memcpy(&crcInputData[0], nodesData, sizeof(rplidar_response_hq_capsule_measurement_nodes_t) - 4);
+            crcInputData.resize(sizeof(scanner_response_hq_capsule_measurement_nodes_t) - 4);
+            memcpy(&crcInputData[0], nodesData, sizeof(scanner_response_hq_capsule_measurement_nodes_t) - 4);
             //supplement crcInputData to mutiples of 4
             int leftBytes = 4 - (crcInputData.size() & 3);
             for (int i = 0; i < leftBytes; i++)
@@ -149,7 +149,7 @@ void UnpackerHandler_HQNode::onData(LIDARSampleDataUnpackerInner* engine, const 
             {
                 for (size_t pos = 0; pos < _countof(nodesData->node_hq); ++pos)
                 {
-                    rplidar_response_measurement_node_hq_t hqNode = nodesData->node_hq[pos];
+                    scanner_response_measurement_node_hq_t hqNode = nodesData->node_hq[pos];
 #ifdef _CPU_ENDIAN_BIG
                     hqNode.angle_z_q14 = le16_to_cpu(hqNode.angle_z_q14);
                     hqNode.dist_mm_q2 = le32_to_cpu(hqNode.dist_mm_q2);
@@ -160,7 +160,7 @@ void UnpackerHandler_HQNode::onData(LIDARSampleDataUnpackerInner* engine, const 
             else  //crc check not passed 
             {
                 engine->publishDecodingErrorMsg(LIDARSampleDataUnpacker::ERR_EVENT_ON_EXP_CHECKSUM_ERR
-                    , RPLIDAR_ANS_TYPE_MEASUREMENT_HQ, nodesData, sizeof(*nodesData));
+                    , SCANNER_ANS_TYPE_MEASUREMENT_HQ, nodesData, sizeof(*nodesData));
             }
             continue;
         }

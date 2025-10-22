@@ -21,9 +21,9 @@ TRUSMI LIDAR ROS2
    cd ~/ros2_ws/src
    ```
 
-## Compile & Install rplidar_ros package
+## Compile & Install scannerros package
 
-1. Clone rplidar_ros package from github
+1. Clone scannerros package from github
 
    Ensure you're still in the ros2_ws/src directory before you clone:
 
@@ -33,7 +33,7 @@ TRUSMI LIDAR ROS2
 
 2. Build rpidar_ros package
 
-   From the root of your workspace (ros2_ws), you can now build rplidar_ros package using the command:
+   From the root of your workspace (ros2_ws), you can now build scannerros package using the command:
 
    ```bash
    cd ~/ros2_ws/
@@ -57,18 +57,18 @@ TRUSMI LIDAR ROS2
     $source ~/.bashrc
     ```
 
-## Run rplidar_ros
+## Run scannerros
 
 ### Run rplidar node and view in the rviz
 
 The command for LIDAR is :
 
 ```bash
-ros2 launch rplidar_ros view_rplidar_t1_launch.py
+ros2 launch scannerros view_scannert1_launch.py
 ```
 
 Notice: different lidar use different serial_baudrate.
 
-## RPLIDAR frame
+## SCANNER frame
 
-RPLIDAR frame must be broadcasted according to picture shown in rplidar-frame.png
+SCANNER frame must be broadcasted according to picture shown in rplidar-frame.png

@@ -1,5 +1,5 @@
 /*
- *  RPLIDAR SDK
+ *  SCANNER SDK
  *
  *  Copyright (c) 2009 - 2014 RoboPeak Team
  *  http://www.robopeak.com
@@ -32,20 +32,14 @@
  *
  */
 
-#if defined(_WIN32)
-
-#include "arch/win32/arch_win32.h"
-#elif defined(_MACOS)
-#include "arch/macOS/arch_macOS.h"
-#elif defined(__GNUC__)
+#if defined(__GNUC__)
 #include "arch/linux/arch_linux.h"
 #else
-#error "unsupported target"
 #endif
 
 #include "hal/types.h"
 #include "hal/assert.h"
 
-#include "rplidar.h"
+#include "scanner.h"
 
 #include "hal/util.h"

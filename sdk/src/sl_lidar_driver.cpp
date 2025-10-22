@@ -276,7 +276,7 @@ namespace sl {
             int  operationBufID = _getOperationBufferID_locked();
             auto operationalBuf = &_scanbuffer[operationBufID];
             
-            if (hqNode->flag & RPLIDAR_RESP_HQ_FLAG_SYNCBIT) {
+            if (hqNode->flag & SCANNER_RESP_HQ_FLAG_SYNCBIT) {
                 if (operationalBuf->size()) {
                     operationBufID = _finishCurrentScanAndSwap_locked();
                     operationalBuf = &_scanbuffer[operationBufID];
@@ -403,7 +403,7 @@ namespace sl {
             , _rawSampleNodeHolder(MAX_SCANNODE_CACHE_COUNT)
             , _waiting_packet_type(0)
         {
-            _protocolHandler = std::make_shared< internal::RPLidarProtocolCodec>();
+            _protocolHandler = std::make_shared< internal::ScannerProtocolCodec>();
             _transeiver = std::make_shared< internal::AsyncTransceiver>(*_protocolHandler);
             _dataunpacker.reset(internal::LIDARSampleDataUnpacker::CreateInstance(*this));
 
@@ -637,7 +637,7 @@ namespace sl {
             }
             else {
                 // a legacy device
-                rplidar_response_sample_rate_t sampleRateTmp;
+                scanner_response_sample_rate_t sampleRateTmp;
                 ans = _getLegacySampleDuration_uS(sampleRateTmp, timeout);
 
                 if (!ans) return SL_RESULT_INVALID_DATA;
@@ -715,8 +715,8 @@ namespace sl {
             }
             else {
                 // legacy device support
-                if (scanMode != RPLIDAR_CONF_SCAN_COMMAND_STD) {
-                    rplidar_response_sample_rate_t sampleRateTmp;
+                if (scanMode != SCANNER_CONF_SCAN_COMMAND_STD) {
+                    scanner_response_sample_rate_t sampleRateTmp;
                     ans = _getLegacySampleDuration_uS(sampleRateTmp, timeout);
                     if (!ans) return RESULT_INVALID_DATA;
 
@@ -817,11 +817,11 @@ namespace sl {
             ans = _sendCommandWithResponse(SL_LIDAR_CMD_GET_DEVICE_INFO, SL_LIDAR_ANS_TYPE_DEVINFO, ans_frame, timeout);
 
             if (IS_FAIL(ans)) return ans;
-            if (ans_frame->getPayloadSize() < sizeof(rplidar_response_device_info_t))
+            if (ans_frame->getPayloadSize() < sizeof(scanner_response_device_info_t))
             {
                 return RESULT_INVALID_DATA;
             }
-            info = *(rplidar_response_device_info_t*)ans_frame->getDataBuf();
+            info = *(scanner_response_device_info_t*)ans_frame->getDataBuf();
 #ifdef _CPU_ENDIAN_BIG
             info.firmware_version = le16_to_cpu(info.firmware_version);
 #endif
@@ -858,7 +858,7 @@ namespace sl {
                     ans = _sendCommandWithResponse(SL_LIDAR_CMD_GET_ACC_BOARD_FLAG, SL_LIDAR_ANS_TYPE_ACC_BOARD_FLAG, ans_frame, timeout, &flag, sizeof(flag));
                     if (!ans) return ans;
 
-                    if (ans_frame->getPayloadSize() < sizeof(rplidar_response_acc_board_flag_t))
+                    if (ans_frame->getPayloadSize() < sizeof(scanner_response_acc_board_flag_t))
                     {
                         return RESULT_INVALID_DATA;
                     }
@@ -922,11 +922,11 @@ namespace sl {
             ans = _sendCommandWithResponse(SL_LIDAR_CMD_GET_DEVICE_HEALTH, SL_LIDAR_ANS_TYPE_DEVHEALTH, ans_frame, timeout);
 
             if (IS_FAIL(ans)) return ans;
-            if (ans_frame->getPayloadSize() < sizeof(rplidar_response_device_health_t))
+            if (ans_frame->getPayloadSize() < sizeof(scanner_response_device_health_t))
             {
                 return SL_RESULT_INVALID_DATA;
             }
-            health = *(rplidar_response_device_health_t*)ans_frame->getDataBuf();
+            health = *(scanner_response_device_health_t*)ans_frame->getDataBuf();
 #ifdef _CPU_ENDIAN_BIG
             health.error_code = le16_to_cpu(health.error_code);
 #endif
@@ -1176,7 +1176,7 @@ namespace sl {
         u_result checkSupportConfigCommands(bool& outSupport, sl_u32 timeoutInMs = DEFAULT_TIMEOUT)
         {
             u_result ans;
-            rplidar_response_device_info_t devinfo;
+            scanner_response_device_info_t devinfo;
             ans = getDeviceInfo(devinfo, timeoutInMs);
             if (IS_FAIL(ans)) {
                 outSupport = false;
@@ -1237,12 +1237,12 @@ namespace sl {
             }
 
             //check if returned size is even less than sizeof(type) 
-            if (ans_frame->getPayloadSize() < sizeof(rplidar_response_set_lidar_conf_t)) {
+            if (ans_frame->getPayloadSize() < sizeof(scanner_response_set_lidar_conf_t)) {
                 return RESULT_INVALID_DATA;
             }
 
-            const rplidar_response_set_lidar_conf_t* response =
-                reinterpret_cast<const rplidar_response_set_lidar_conf_t*>(ans_frame->getDataBuf());
+            const scanner_response_set_lidar_conf_t* response =
+                reinterpret_cast<const scanner_response_set_lidar_conf_t*>(ans_frame->getDataBuf());
 
 
             if (ans_frame->getPayloadSize() == 4) {
@@ -1263,8 +1263,8 @@ namespace sl {
             std::vector<_u8> requestPkt;
 
             if (!payload) payloadSize = 0;
-            requestPkt.resize(sizeof(rplidar_payload_get_scan_conf_t) + payloadSize);
-            rplidar_payload_get_scan_conf_t* query = reinterpret_cast<rplidar_payload_get_scan_conf_t*>(&requestPkt[0]);
+            requestPkt.resize(sizeof(scannerpayload_get_scan_conf_t) + payloadSize);
+            scannerpayload_get_scan_conf_t* query = reinterpret_cast<scannerpayload_get_scan_conf_t*>(&requestPkt[0]);
 
             query->type = type;
 
@@ -1278,20 +1278,20 @@ namespace sl {
                 return ans;
             }
             //check if returned size is even less than sizeof(type) 
-            if (ans_frame->getPayloadSize() < offsetof(rplidar_response_get_lidar_conf_t, payload)) {
+            if (ans_frame->getPayloadSize() < offsetof(scanner_response_get_lidar_conf_t, payload)) {
                 return SL_RESULT_INVALID_DATA;
             }
 
             //check if returned type is same as asked type
-            const rplidar_response_get_lidar_conf_t* replied =
-                reinterpret_cast<const rplidar_response_get_lidar_conf_t*>(ans_frame->getDataBuf());
+            const scanner_response_get_lidar_conf_t* replied =
+                reinterpret_cast<const scanner_response_get_lidar_conf_t*>(ans_frame->getDataBuf());
 
 
             if (replied->type != type) {
                 return SL_RESULT_INVALID_DATA;
             }
             //copy all the payload into &outputBuf
-            int payLoadLen = (int)ans_frame->getPayloadSize() - (int)offsetof(rplidar_response_get_lidar_conf_t, payload);
+            int payLoadLen = (int)ans_frame->getPayloadSize() - (int)offsetof(scanner_response_get_lidar_conf_t, payload);
             //do consistency check
             if (payLoadLen < 0) {
                 return SL_RESULT_INVALID_DATA;
@@ -1472,7 +1472,7 @@ namespace sl {
 
 
 
-        u_result _detectLIDARNativeInterfaceType(LIDARInterfaceType & outputType, const rplidar_response_device_info_t& devInfo, sl_u32 timeout = DEFAULT_TIMEOUT)
+        u_result _detectLIDARNativeInterfaceType(LIDARInterfaceType & outputType, const scanner_response_device_info_t& devInfo, sl_u32 timeout = DEFAULT_TIMEOUT)
         {
             
             LIDARMajorType majorType = ParseLIDARMajorTypeByModelID(devInfo.model);
@@ -1513,7 +1513,7 @@ namespace sl {
             }
         }
 
-        _u32 _getNativeBaudRate(const rplidar_response_device_info_t & devInfo)
+        _u32 _getNativeBaudRate(const scanner_response_device_info_t & devInfo)
         {
             _u8 majorModelID = (devInfo.model >> 4);
             switch (majorModelID)
@@ -1535,7 +1535,7 @@ namespace sl {
             }
         }
 
-        bool _updateTimingDesc(const rplidar_response_device_info_t& devInfo, float selectedSampleDuration)
+        bool _updateTimingDesc(const scanner_response_device_info_t& devInfo, float selectedSampleDuration)
         {
             _timing_desc.native_baudrate = _getNativeBaudRate(devInfo);
             _detectLIDARNativeInterfaceType(_timing_desc.native_interface_type, devInfo, 500);
@@ -1553,12 +1553,12 @@ namespace sl {
 
         }
 
-        u_result _getLegacySampleDuration_uS(rplidar_response_sample_rate_t& rateInfo, _u32 timeout)
+        u_result _getLegacySampleDuration_uS(scanner_response_sample_rate_t& rateInfo, _u32 timeout)
         {
             
             static const _u32 LEGACY_SAMPLE_DURATION = 476;
 
-            rplidar_response_device_info_t devinfo;
+            scanner_response_device_info_t devinfo;
             // 1. fetch the device version first...
             u_result ans = getDeviceInfo(devinfo, timeout);
 
@@ -1582,7 +1582,7 @@ namespace sl {
             ans = _sendCommandWithResponse(SL_LIDAR_CMD_GET_SAMPLERATE, SL_LIDAR_ANS_TYPE_SAMPLE_RATE, ans_frame, timeout);
 
             if (IS_FAIL(ans)) return ans;
-            if (ans_frame->getPayloadSize() < sizeof(rplidar_response_sample_rate_t))
+            if (ans_frame->getPayloadSize() < sizeof(scanner_response_sample_rate_t))
             {
                 return RESULT_INVALID_DATA;
             }
@@ -1642,7 +1642,7 @@ namespace sl {
         
     public:
 
-        virtual void onHQNodeDecoded(_u64 timestamp_uS, const rplidar_response_measurement_node_hq_t* node)
+        virtual void onHQNodeDecoded(_u64 timestamp_uS, const scanner_response_measurement_node_hq_t* node)
         {
             _scanHolder.pushScanNodeData(timestamp_uS, node);
             _rawSampleNodeHolder.pushNode(timestamp_uS, node);
@@ -1672,7 +1672,7 @@ namespace sl {
         }
     private:
 
-        std::shared_ptr<internal::RPLidarProtocolCodec> _protocolHandler;
+        std::shared_ptr<internal::ScannerProtocolCodec> _protocolHandler;
         std::shared_ptr<internal::AsyncTransceiver> _transeiver;
         std::shared_ptr<internal::LIDARSampleDataUnpacker> _dataunpacker;
 

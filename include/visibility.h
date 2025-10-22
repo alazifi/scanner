@@ -26,37 +26,37 @@ extern "C"
 #if defined _WIN32 || defined __CYGWIN__
 
   #ifdef __GNUC__
-    #define RPLIDAR_ROS_EXPORT __attribute__ ((dllexport))
-    #define RPLIDAR_ROS_IMPORT __attribute__ ((dllimport))
+    #define SCANNER_ROS_EXPORT __attribute__ ((dllexport))
+    #define SCANNER_ROS_IMPORT __attribute__ ((dllimport))
   #else
-    #define RPLIDAR_ROS_EXPORT __declspec(dllexport)
-    #define RPLIDAR_ROS_IMPORT __declspec(dllimport)
+    #define SCANNER_ROS_EXPORT __declspec(dllexport)
+    #define SCANNER_ROS_IMPORT __declspec(dllimport)
   #endif
 
-  #ifdef RPLIDAR_ROS_DLL
-    #define RPLIDAR_ROS_PUBLIC RPLIDAR_ROS_EXPORT
+  #ifdef SCANNER_ROS_DLL
+    #define SCANNER_ROS_PUBLIC SCANNER_ROS_EXPORT
   #else
-    #define RPLIDAR_ROS_PUBLIC RPLIDAR_ROS_IMPORT
+    #define SCANNER_ROS_PUBLIC SCANNER_ROS_IMPORT
   #endif
 
-  #define RPLIDAR_ROS_PUBLIC_TYPE RPLIDAR_ROS_PUBLIC
+  #define SCANNER_ROS_PUBLIC_TYPE SCANNER_ROS_PUBLIC
 
-  #define RPLIDAR_ROS_LOCAL
+  #define SCANNER_ROS_LOCAL
 
 #else
 
-  #define RPLIDAR_ROS_EXPORT __attribute__ ((visibility("default")))
-  #define RPLIDAR_ROS_IMPORT
+  #define SCANNER_ROS_EXPORT __attribute__ ((visibility("default")))
+  #define SCANNER_ROS_IMPORT
 
   #if __GNUC__ >= 4
-    #define RPLIDAR_ROS_PUBLIC __attribute__ ((visibility("default")))
-    #define RPLIDAR_ROS_LOCAL  __attribute__ ((visibility("hidden")))
+    #define SCANNER_ROS_PUBLIC __attribute__ ((visibility("default")))
+    #define SCANNER_ROS_LOCAL  __attribute__ ((visibility("hidden")))
   #else
-    #define RPLIDAR_ROS_PUBLIC
-    #define RPLIDAR_ROS_LOCAL
+    #define SCANNER_ROS_PUBLIC
+    #define SCANNER_ROS_LOCAL
   #endif
 
-  #define RPLIDAR_ROS_PUBLIC_TYPE
+  #define SCANNER_ROS_PUBLIC_TYPE
 #endif
 
 #ifdef __cplusplus

@@ -44,7 +44,7 @@ public:
 };
 
 
-class RPLidarProtocolCodec : public IAsyncProtocolCodec
+class ScannerProtocolCodec : public IAsyncProtocolCodec
 {
 public:
 
@@ -57,7 +57,7 @@ public:
         STATUS_LOOP_MODE_FLAG = 0x80000000,
     };
 
-    RPLidarProtocolCodec();
+    ScannerProtocolCodec();
 
     void exitLoopMode();
 

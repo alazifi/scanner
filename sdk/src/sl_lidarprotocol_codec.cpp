@@ -55,7 +55,7 @@ namespace sl { namespace internal {
 
 
 
-RPLidarProtocolCodec::RPLidarProtocolCodec()
+ScannerProtocolCodec::ScannerProtocolCodec()
     : IAsyncProtocolCodec()
     , _listener(NULL)
     , _op_locker(true)
@@ -63,23 +63,23 @@ RPLidarProtocolCodec::RPLidarProtocolCodec()
     onDecodeReset();
 }
 
-void RPLidarProtocolCodec::exitLoopMode() {
+void ScannerProtocolCodec::exitLoopMode() {
     onDecodeReset();
 }
 
 
 
-void RPLidarProtocolCodec::setMessageListener(IProtocolMessageListener* listener)
+void ScannerProtocolCodec::setMessageListener(IProtocolMessageListener* listener)
 {
     rp::hal::AutoLocker l(_op_locker);
     _listener = listener;
 }
 
-size_t RPLidarProtocolCodec::estimateLength(message_autoptr_t& message)
+size_t ScannerProtocolCodec::estimateLength(message_autoptr_t& message)
 {
     size_t actualSize = 2; //1-byte's sync byte, 1-byte's cmd byte
 
-    if (message->cmd & RPLIDAR_CMDFLAG_HAS_PAYLOAD) {
+    if (message->cmd & SCANNER_CMDFLAG_HAS_PAYLOAD) {
         actualSize += (message->getPayloadSize() & 0xFF);
         actualSize += 2; //1-byte for size field, 1-byte for checksum
     }
@@ -88,7 +88,7 @@ size_t RPLidarProtocolCodec::estimateLength(message_autoptr_t& message)
 }
 
 
-void RPLidarProtocolCodec::onEncodeData(message_autoptr_t& message, _u8* buffer, size_t* size)
+void ScannerProtocolCodec::onEncodeData(message_autoptr_t& message, _u8* buffer, size_t* size)
 {
     _u8 checksum = 0;
     size_t writeSize = std::min<size_t>(*size, estimateLength(message));
@@ -98,7 +98,7 @@ void RPLidarProtocolCodec::onEncodeData(message_autoptr_t& message, _u8* buffer,
         _u8 currentTxByte;
         switch (currentPos) {
         case 0: // sync byte
-            currentTxByte = RPLIDAR_CMD_SYNC_BYTE;
+            currentTxByte = SCANNER_CMD_SYNC_BYTE;
             break;
         case 1: // cmd byte
             currentTxByte = message->cmd;
@@ -129,7 +129,7 @@ void RPLidarProtocolCodec::onEncodeData(message_autoptr_t& message, _u8* buffer,
     *size = currentPos;
 }
 
-void   RPLidarProtocolCodec::onDecodeReset() {
+void   ScannerProtocolCodec::onDecodeReset() {
     rp::hal::AutoLocker autolock(_op_locker);
     // flush the pending data
     _decodingMessage.cleanData();
@@ -139,7 +139,7 @@ void   RPLidarProtocolCodec::onDecodeReset() {
 }
 
 
-void RPLidarProtocolCodec::onDecodeData(const void* buffer, size_t size)
+void ScannerProtocolCodec::onDecodeData(const void* buffer, size_t size)
 {
     rp::hal::AutoLocker autolock(_op_locker);
 
@@ -153,12 +153,12 @@ void RPLidarProtocolCodec::onDecodeData(const void* buffer, size_t size)
 
         switch (_working_states & ((_u32)STATUS_LOOP_MODE_FLAG - 1)) {
         case STATUS_WAIT_SYNC1:
-            if (currentByte == RPLIDAR_ANS_SYNC_BYTE1) {
+            if (currentByte == SCANNER_ANS_SYNC_BYTE1) {
                 _working_states = STATUS_WAIT_SYNC2;
             }
             break;
         case STATUS_WAIT_SYNC2:
-            if (currentByte == RPLIDAR_ANS_SYNC_BYTE2) {
+            if (currentByte == SCANNER_ANS_SYNC_BYTE2) {
                 _working_states = STATUS_WAIT_SIZE_FLAG;
                 _rx_pos = 0; // init rx pos for recv size and flag
             }
@@ -178,11 +178,11 @@ void RPLidarProtocolCodec::onDecodeData(const void* buffer, size_t size)
                 _decodingMessage.len = le32_to_cpu(_decodingMessage.len);
 
                 // 30bit size + 2bit flag has been received
-                _u32 flagbits = (_u32)(_decodingMessage.len >> RPLIDAR_ANS_HEADER_SUBTYPE_SHIFT);
-                if (flagbits & RPLIDAR_ANS_PKTFLAG_LOOP) {
+                _u32 flagbits = (_u32)(_decodingMessage.len >> SCANNER_ANS_HEADER_SUBTYPE_SHIFT);
+                if (flagbits & SCANNER_ANS_PKTFLAG_LOOP) {
                     _working_states |= STATUS_LOOP_MODE_FLAG;
                 }
-                _decodingMessage.len = (_decodingMessage.len & RPLIDAR_ANS_HEADER_SIZE_MASK);
+                _decodingMessage.len = (_decodingMessage.len & SCANNER_ANS_HEADER_SIZE_MASK);
                 // alloc buffer
                 _decodingMessage.fillData(NULL, _decodingMessage.getPayloadSize());
                 _rx_pos = 0;

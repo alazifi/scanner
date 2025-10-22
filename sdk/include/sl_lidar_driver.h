@@ -361,17 +361,17 @@ namespace sl {
         /// \param outUsedScanMode  The scan mode selected by lidar
         virtual sl_result startScanExpress(bool force, sl_u16 scanMode, sl_u32 options = 0, LidarScanMode* outUsedScanMode = nullptr, sl_u32 timeout = DEFAULT_TIMEOUT) = 0;
 
-        /// Retrieve the health status of the RPLIDAR
-        /// The host system can use this operation to check whether RPLIDAR is in the self-protection mode.
+        /// Retrieve the health status of the SCANNER
+        /// The host system can use this operation to check whether SCANNER is in the self-protection mode.
         ///
-        /// \param health        The health status info returned from the RPLIDAR
+        /// \param health        The health status info returned from the SCANNER
         ///
         /// \param timeout       The operation timeout value (in millisecond) for the serial port communication     
         virtual sl_result getHealth(sl_lidar_response_device_health_t& health, sl_u32 timeout = DEFAULT_TIMEOUT) = 0;
 
-        /// Get the device information of the RPLIDAR include the serial number, firmware version, device model etc.
+        /// Get the device information of the SCANNER include the serial number, firmware version, device model etc.
         /// 
-        /// \param info          The device information returned from the RPLIDAR
+        /// \param info          The device information returned from the SCANNER
         /// \param timeout       The operation timeout value (in millisecond) for the serial port communication  
         virtual sl_result getDeviceInfo(sl_lidar_response_device_info_t& info, sl_u32 timeout = DEFAULT_TIMEOUT) = 0;
 
@@ -424,7 +424,7 @@ namespace sl {
         ///
         /// \param nodebuffer     Buffer provided by the caller application to store the scan data
         ///
-        /// \param count          The caller must initialize this parameter to set the max data count of the provided buffer (in unit of rplidar_response_measurement_node_t).
+        /// \param count          The caller must initialize this parameter to set the max data count of the provided buffer (in unit of scanner_response_measurement_node_t).
         ///                       Once the interface returns, this parameter will store the actual received data count.
         ///
         /// \param timeout        Max duration allowed to wait for a complete scan data, nothing will be stored to the nodebuffer if a complete 360-degrees' scan data cannot to be ready timely.
@@ -455,7 +455,7 @@ namespace sl {
         ///
         /// \param nodebuffer     Buffer provided by the caller application to store the scan data
         ///
-        /// \param count          The caller must initialize this parameter to set the max data count of the provided buffer (in unit of rplidar_response_measurement_node_t).
+        /// \param count          The caller must initialize this parameter to set the max data count of the provided buffer (in unit of scanner_response_measurement_node_t).
         ///                       Once the interface returns, this parameter will store the actual received data count.
         ///
         /// \param timestamp_uS   The reference used to store the timestamp value.
@@ -471,7 +471,7 @@ namespace sl {
         ///
         /// \param nodebuffer     Buffer provided by the caller application to do the reorder. Should be retrived from the grabScanData
         ///
-        /// \param count          The caller must initialize this parameter to set the max data count of the provided buffer (in unit of rplidar_response_measurement_node_t).
+        /// \param count          The caller must initialize this parameter to set the max data count of the provided buffer (in unit of scanner_response_measurement_node_t).
         ///                       Once the interface returns, this parameter will store the actual received data count.
         /// The interface will return SL_RESULT_OPERATION_FAIL when all the scan data is invalid. 
         virtual sl_result ascendScanData(sl_lidar_response_measurement_node_hq_t* nodebuffer, size_t count) = 0;
@@ -492,9 +492,9 @@ namespace sl {
         ///Note: The function will stop scan if speed is DEFAULT_MOTOR_SPEED.
         virtual sl_result setMotorSpeed(sl_u16 speed = DEFAULT_MOTOR_SPEED) = 0;
         
-        /// Get the motor information of the RPLIDAR include the max speed, min speed, desired speed.
+        /// Get the motor information of the SCANNER include the max speed, min speed, desired speed.
         /// 
-        /// \param motorInfo          The motor information returned from the RPLIDAR
+        /// \param motorInfo          The motor information returned from the SCANNER
         virtual sl_result getMotorInfo(LidarMotorInfo &motorInfo, sl_u32 timeoutInMs = DEFAULT_TIMEOUT) = 0;
     
 

@@ -38,7 +38,7 @@
 #include "hal/locker.h"
 #include "hal/socket.h"
 #include "hal/event.h"
-#include "rplidar_driver.h"
+#include "scanner_driver.h"
 #include "sl_crc.h" 
 #include <algorithm>
 
@@ -123,12 +123,12 @@ namespace rp { namespace standalone{ namespace rplidar {
         return (_lidarDrv)->startScanExpress(force, scanMode, options, outUsedScanMode, timeout);
     }
     
-    u_result RPlidarDriver::getHealth(rplidar_response_device_health_t & health, _u32 timeout)
+    u_result RPlidarDriver::getHealth(scanner_response_device_health_t & health, _u32 timeout)
     {
         return (_lidarDrv)->getHealth(health, timeout);
     }
 
-    u_result RPlidarDriver::getDeviceInfo(rplidar_response_device_info_t & info, _u32 timeout)
+    u_result RPlidarDriver::getDeviceInfo(scanner_response_device_info_t & info, _u32 timeout)
     {
         return (_lidarDrv)->getDeviceInfo(info, timeout);
     }
@@ -147,12 +147,12 @@ namespace rp { namespace standalone{ namespace rplidar {
         return ans;
     }
 
-    u_result RPlidarDriver::setLidarIpConf(const rplidar_ip_conf_t& conf, _u32 timeout)
+    u_result RPlidarDriver::setLidarIpConf(const scannerip_conf_t& conf, _u32 timeout)
 	{
 		return (_lidarDrv)->setLidarIpConf(conf, timeout);
 	}
 
-    u_result RPlidarDriver::getLidarIpConf(rplidar_ip_conf_t& conf, _u32 timeout)
+    u_result RPlidarDriver::getLidarIpConf(scannerip_conf_t& conf, _u32 timeout)
     {
         return (_lidarDrv)->getLidarIpConf(conf, timeout);
     }
@@ -167,22 +167,22 @@ namespace rp { namespace standalone{ namespace rplidar {
         return (_lidarDrv)->stop(timeout);
     }
 
-    u_result RPlidarDriver::grabScanDataHq(rplidar_response_measurement_node_hq_t * nodebuffer, size_t & count, _u32 timeout)
+    u_result RPlidarDriver::grabScanDataHq(scanner_response_measurement_node_hq_t * nodebuffer, size_t & count, _u32 timeout)
     {
         return (_lidarDrv)->grabScanDataHq(nodebuffer, count, timeout);
     }
 
-    u_result RPlidarDriver::ascendScanData(rplidar_response_measurement_node_hq_t * nodebuffer, size_t count)
+    u_result RPlidarDriver::ascendScanData(scanner_response_measurement_node_hq_t * nodebuffer, size_t count)
     {
         return (_lidarDrv)->ascendScanData(nodebuffer, count);
     }
     
-    u_result RPlidarDriver::getScanDataWithInterval(rplidar_response_measurement_node_t * nodebuffer, size_t & count)
+    u_result RPlidarDriver::getScanDataWithInterval(scanner_response_measurement_node_t * nodebuffer, size_t & count)
     {
         return RESULT_OPERATION_NOT_SUPPORT;
     }
 
-    u_result RPlidarDriver::getScanDataWithIntervalHq(rplidar_response_measurement_node_hq_t * nodebuffer, size_t & count)
+    u_result RPlidarDriver::getScanDataWithIntervalHq(scanner_response_measurement_node_hq_t * nodebuffer, size_t & count)
     {
         return (_lidarDrv)->getScanDataWithIntervalHq(nodebuffer, count);
     }

@@ -50,7 +50,7 @@ class LIDARSampleDataListener
 
 public:
 	virtual void onHQNodeScanResetReq() = 0;
-	virtual void onHQNodeDecoded(_u64 timestamp_uS, const rplidar_response_measurement_node_hq_t* node) = 0;
+	virtual void onHQNodeDecoded(_u64 timestamp_uS, const scanner_response_measurement_node_hq_t* node) = 0;
 	virtual void onCustomSampleDataDecoded(_u8 ansType, _u32 customCode, const void* data, size_t size) {}
 
 	virtual void onDecodingError(int errMsg, _u8 ansType, const void* payload, size_t size) {}

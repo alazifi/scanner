@@ -178,7 +178,7 @@ public:
 		return getus();
 	}
 
-	virtual void publishHQNode(_u64 timestamp_uS, const rplidar_response_measurement_node_hq_t* node)
+	virtual void publishHQNode(_u64 timestamp_uS, const scanner_response_measurement_node_hq_t* node)
 	{
 		_listener.onHQNodeDecoded(timestamp_uS, node);
 	}

@@ -1,5 +1,5 @@
 /*
- *  RPLIDAR ROS2 NODE
+ *  SCANNER ROS2 NODE
  *
  *  Copyright (c) 2009 - 2014 RoboPeak Team
  *  http://www.robopeak.com
@@ -107,7 +107,7 @@ class RPlidarNode : public rclcpp::Node
             this->get_parameter_or<float>("scan_frequency", scan_frequency, 10.0);
     }
 
-    bool getRPLIDARDeviceInfo(ILidarDriver * drv)
+    bool getSCANNERDeviceInfo(ILidarDriver * drv)
     {
         sl_result     op_result;
         sl_lidar_response_device_info_t devinfo;
@@ -127,35 +127,35 @@ class RPlidarNode : public rclcpp::Node
         for (int pos = 0; pos < 16 ;++pos) {
             sprintf(sn_str + (pos * 2),"%02X", devinfo.serialnum[pos]);
         }
-        RCLCPP_INFO(this->get_logger(),"RPLidar S/N: %s",sn_str);
+        RCLCPP_INFO(this->get_logger(),"Scanner S/N: %s",sn_str);
         RCLCPP_INFO(this->get_logger(),"Firmware Ver: %d.%02d",devinfo.firmware_version>>8, devinfo.firmware_version & 0xFF);
         RCLCPP_INFO(this->get_logger(),"Hardware Rev: %d",(int)devinfo.hardware_version);
         return true;
     }
 
-    bool checkRPLIDARHealth(ILidarDriver * drv)
+    bool checkSCANNERHealth(ILidarDriver * drv)
     {
         sl_result     op_result;
         sl_lidar_response_device_health_t healthinfo;
         op_result = drv->getHealth(healthinfo);
         if (SL_IS_OK(op_result)) { 
-            RCLCPP_INFO(this->get_logger(),"RPLidar health status : %d", healthinfo.status);
+            RCLCPP_INFO(this->get_logger(),"Scanner health status : %d", healthinfo.status);
             switch (healthinfo.status) {
                 case SL_LIDAR_STATUS_OK:
-                    RCLCPP_INFO(this->get_logger(),"RPLidar health status : OK.");
+                    RCLCPP_INFO(this->get_logger(),"Scanner health status : OK.");
                     return true;
                 case SL_LIDAR_STATUS_WARNING:
-                    RCLCPP_INFO(this->get_logger(),"RPLidar health status : Warning.");
+                    RCLCPP_INFO(this->get_logger(),"Scanner health status : Warning.");
                     return true;
                 case SL_LIDAR_STATUS_ERROR:
-                    RCLCPP_ERROR(this->get_logger(),"Error, RPLidar internal error detected. Please reboot the device to retry.");
+                    RCLCPP_ERROR(this->get_logger(),"Error, Scanner internal error detected. Please reboot the device to retry.");
                     return false;
                 default:
                     RCLCPP_ERROR(this->get_logger(),"Error, Unknown internal error detected. Please reboot the device to retry.");
                     return false;
             }
         } else {
-            RCLCPP_ERROR(this->get_logger(),"Error, cannot retrieve RPLidar health code: %x", op_result);
+            RCLCPP_ERROR(this->get_logger(),"Error, cannot retrieve Scanner health code: %x", op_result);
             return false;
         }
     }
@@ -372,7 +372,7 @@ public:
         int ver_major = SL_LIDAR_SDK_VERSION_MAJOR;
         int ver_minor = SL_LIDAR_SDK_VERSION_MINOR;
         int ver_patch = SL_LIDAR_SDK_VERSION_PATCH;
-        RCLCPP_INFO(this->get_logger(),"RPLidar running on ROS2 package rplidar_ros. RPLIDAR SDK Version:%d.%d.%d",ver_major,ver_minor,ver_patch);
+        RCLCPP_INFO(this->get_logger(),"Scanner running on ROS2 package scannerros. SCANNER SDK Version:%d.%d.%d",ver_major,ver_minor,ver_patch);
     
         sl_result     op_result;
         // create the driver instance
@@ -407,13 +407,13 @@ public:
         }
         
         // get rplidar device info
-        if (!getRPLIDARDeviceInfo(drv)) {
+        if (!getSCANNERDeviceInfo(drv)) {
             delete drv; drv = nullptr;
             return -1;
         }
 
         // check health...
-        if (!checkRPLIDARHealth(drv)) {
+        if (!checkSCANNERHealth(drv)) {
             delete drv; drv = nullptr;
             return -1;
         }
@@ -426,8 +426,8 @@ public:
             scan_frequency_tunning_after_scan = true;
         }
 
-        if(!scan_frequency_tunning_after_scan){ //for RPLIDAR A serials
-            //start RPLIDAR A serials  rotate by pwm
+        if(!scan_frequency_tunning_after_scan){ //for SCANNER A serials
+            //start SCANNER A serials  rotate by pwm
             drv->setMotorSpeed(600);
         }
 
